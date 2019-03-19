@@ -110,10 +110,12 @@ class JobScoresView(BaseApiView):
         super(JobScoresView, self).__init__()
         self.model_class = JobHistoryModel
         self.serializer_class = JobHistorySerializer
+        self.filter_list = ['start', 'end']
 
     def get(self, request):
         self.create_filter(request.GET)
-        return_obj = self.model_class.objects.filter(**self.filter)
+        return_obj = self.model_class.objects.filter(start_time__gte=self.filter['start_time' + '__gte'],
+                                                     start_time__lte=self.filter['end_time__lte'])
         return_dict = dict()
         for obj in return_obj:
             if obj.status in return_dict:
